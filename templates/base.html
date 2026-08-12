@@ -1,0 +1,29 @@
+{% load i18n %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Supplier Hub{% endblock %}</title>
+    <style>
+      :root { color-scheme: light; font-family: Inter, system-ui, sans-serif; }
+      body { margin: 0; color: #17211b; background: #f5f7f4; }
+      header { background: #123c2d; color: white; padding: 1rem 2rem; }
+      header a { color: white; text-decoration: none; font-weight: 700; }
+      main { width: min(68rem, calc(100% - 2rem)); margin: 3rem auto; }
+      .hero { background: white; border-radius: 1rem; padding: clamp(2rem, 6vw, 5rem); box-shadow: 0 1rem 3rem #153c2912; }
+      .eyebrow { color: #276749; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      h1 { max-width: 15ch; font-size: clamp(2.4rem, 7vw, 5rem); line-height: .98; margin: .6rem 0 1.4rem; }
+      p { max-width: 62ch; font-size: 1.08rem; line-height: 1.65; }
+      .button { display: inline-block; padding: .8rem 1rem; border-radius: .55rem; background: #1e6f50; color: white; text-decoration: none; font-weight: 700; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 2rem; }
+      .card { background: white; border: 1px solid #dce5df; border-radius: .75rem; padding: 1.25rem; }
+      .muted { color: #5b6860; }
+    </style>
+  </head>
+  <body>
+    <header><a href="{% url 'home' %}">Supplier Hub</a></header>
+    <main>{% block content %}{% endblock %}</main>
+  </body>
+</html>
+

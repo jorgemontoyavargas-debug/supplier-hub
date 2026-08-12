@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Panel — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Panel</p>
+  <h1>Hola, {{ user.get_full_name|default:user.username }}</h1>
+  <p class="muted">Estas son las organizaciones a las que tienes acceso.</p>
+  <div class="cards">
+    {% for membership in memberships %}
+      <article class="card">
+        <h2>{{ membership.organization.name }}</h2>
+        <p>{{ membership.get_role_display }}</p>
+      </article>
+    {% empty %}
+      <article class="card">Aún no tienes una organización asignada.</article>
+    {% endfor %}
+  </div>
+{% endblock %}
+

@@ -1,0 +1,28 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.venv/
+sites/
+secrets/
+db.sqlite3
+media/
+
+# Real or private test documents
+samples/private/
+
+# Generated files
+dist/
+build/
+coverage/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+node_modules/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,35 @@
+from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.http import JsonResponse
+from django.shortcuts import render
+
+
+def health(request):
+    try:
+        connection.ensure_connection()
+        database_status = "ok"
+        status_code = 200
+    except Exception:
+        database_status = "unavailable"
+        status_code = 503
+    return JsonResponse(
+        {
+            "status": "ok" if status_code == 200 else "degraded",
+            "service": "supplier-hub",
+            "version": "0.0.1",
+            "database": database_status,
+        },
+        status=status_code,
+    )
+
+
+def home(request):
+    return render(request, "core/home.html")
+
+
+@login_required
+def dashboard(request):
+    memberships = request.user.memberships.select_related("organization")
+    return render(request, "core/dashboard.html", {"memberships": memberships})
+
+# Create your views here.

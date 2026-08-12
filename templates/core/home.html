@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Supplier Hub — Homologación de proveedores{% endblock %}
+{% block content %}
+  <section class="hero">
+    <div class="eyebrow">Código abierto · Para pymes</div>
+    <h1>Proveedores en regla, sin hojas de cálculo.</h1>
+    <p>Centraliza el registro, la documentación y la homologación de tus proveedores. Supplier Hub funciona sin ERP, puede integrarse por API y no requiere una suscripción.</p>
+    {% if user.is_authenticated %}
+      <a class="button" href="{% url 'dashboard' %}">Abrir panel</a>
+    {% else %}
+      <a class="button" href="{% url 'login' %}">Ingresar</a>
+    {% endif %}
+  </section>
+{% endblock %}
+
