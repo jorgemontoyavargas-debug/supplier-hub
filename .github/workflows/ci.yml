@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python manage.py test
+      - run: python manage.py evaluate_local_ai
+      - run: python manage.py collectstatic --noinput
+        env:
+          SUPPLIER_HUB_SECRET_KEY: ci-only-secret-key-with-more-than-fifty-characters-123456
+          SUPPLIER_HUB_DEBUG: "false"
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure local container test
+        run: |
+          printf '%s\n' \
+            'SUPPLIER_HUB_SECRET_KEY=ci-container-secret-key-with-more-than-fifty-characters-123456' \
+            'SUPPLIER_HUB_DB_PASSWORD=ci-database-password' \
+            'SUPPLIER_HUB_ALLOWED_HOSTS=localhost,127.0.0.1' \
+            'SUPPLIER_HUB_HTTPS=false' \
+            'SUPPLIER_HUB_SEED_DEMO=true' > .env
+      - run: docker compose config --quiet
+      - run: docker compose up -d --build
+      - name: Wait for healthy application
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8000/salud/ | grep -q '"status": "ok"'; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose ps
+          docker compose logs web db
+          exit 1
+      - run: docker compose exec -T web python manage.py check
+      - name: Verify backup and restore
+        run: |
+          backup_dir=$(./scripts/backup.sh)
+          docker compose exec -T web python manage.py shell -c \
+            "from suppliers.models import Supplier; Supplier.objects.filter(tax_id='901000002').delete(); assert not Supplier.objects.filter(tax_id='901000002').exists()"
+          CONFIRM_RESTORE=yes ./scripts/restore.sh "$backup_dir"
+          docker compose exec -T web python manage.py shell -c \
+            "from suppliers.models import Supplier; assert Supplier.objects.filter(tax_id='901000002').exists()"
+          curl --fail --silent http://127.0.0.1:8000/salud/ | grep -q '"status": "ok"'
+      - if: always()
+        run: docker compose down -v

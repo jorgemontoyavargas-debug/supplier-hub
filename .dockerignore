@@ -1,0 +1,11 @@
+.git
+.venv
+.env
+db.sqlite3
+media
+staticfiles
+dist
+tmp
+__pycache__
+*.pyc
+

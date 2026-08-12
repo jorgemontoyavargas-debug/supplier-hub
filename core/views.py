@@ -3,6 +3,8 @@ from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from config.version import VERSION
+
 
 def health(request):
     try:
@@ -16,7 +18,7 @@ def health(request):
         {
             "status": "ok" if status_code == 200 else "degraded",
             "service": "supplier-hub",
-            "version": "0.0.1",
+            "version": VERSION,
             "database": database_status,
         },
         status=status_code,

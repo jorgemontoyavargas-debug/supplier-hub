@@ -38,14 +38,25 @@ ALLOWED_HOSTS = [
 ]
 
 if not DEBUG:
-    SECURE_SSL_REDIRECT = os.getenv("SUPPLIER_HUB_SECURE_SSL_REDIRECT", "true").lower() == "true"
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = int(os.getenv("SUPPLIER_HUB_HSTS_SECONDS", "31536000"))
+    secure_transport = os.getenv("SUPPLIER_HUB_HTTPS", "true").lower() == "true"
+    SECURE_SSL_REDIRECT = secure_transport
+    SESSION_COOKIE_SECURE = secure_transport
+    CSRF_COOKIE_SECURE = secure_transport
+    SECURE_HSTS_SECONDS = (
+        int(os.getenv("SUPPLIER_HUB_HSTS_SECONDS", "31536000"))
+        if secure_transport
+        else 0
+    )
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = os.getenv("SUPPLIER_HUB_HSTS_PRELOAD", "false").lower() == "true"
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("SUPPLIER_HUB_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 
 # Application definition
@@ -69,6 +80,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -88,6 +100,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.navigation_permissions',
             ],
         },
     },
@@ -99,12 +112,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.getenv("SUPPLIER_HUB_DB_ENGINE", "sqlite") == "postgresql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("SUPPLIER_HUB_DB_NAME", "supplier_hub"),
+            "USER": os.getenv("SUPPLIER_HUB_DB_USER", "supplier_hub"),
+            "PASSWORD": os.getenv("SUPPLIER_HUB_DB_PASSWORD", ""),
+            "HOST": os.getenv("SUPPLIER_HUB_DB_HOST", "db"),
+            "PORT": os.getenv("SUPPLIER_HUB_DB_PORT", "5432"),
+            "CONN_MAX_AGE": 60,
+            "CONN_HEALTH_CHECKS": True,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -148,6 +175,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    },
+}
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

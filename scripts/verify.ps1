@@ -11,12 +11,14 @@ if (-not (Test-Path $PythonExecutable)) {
 & $PythonExecutable manage.py makemigrations --check --dry-run
 & $PythonExecutable manage.py test
 & $PythonExecutable manage.py evaluate_local_ai
-& $PythonExecutable -m compileall -q accounts config core organizations qualifications suppliers
+& $PythonExecutable -m compileall -q accounts config core integrations intelligence organizations qualifications suppliers
+& $PythonExecutable manage.py collectstatic --noinput --verbosity 0
 
 $env:SUPPLIER_HUB_DEBUG = "false"
 $env:SUPPLIER_HUB_SECRET_KEY = "verify-only-secret-key-with-more-than-fifty-characters-1234567890"
 $env:SUPPLIER_HUB_ALLOWED_HOSTS = "localhost,127.0.0.1,testserver"
 $env:SUPPLIER_HUB_HSTS_PRELOAD = "true"
+$env:SUPPLIER_HUB_HTTPS = "true"
 & $PythonExecutable manage.py check --deploy --fail-level WARNING
 
 Write-Host "Verificación completada."

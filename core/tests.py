@@ -54,6 +54,30 @@ class DashboardTests(TestCase):
         self.assertContains(response, "Pyme Demo")
         self.assertNotContains(response, "Otra Empresa")
 
+    def test_supplier_user_sees_portal_but_not_buyer_navigation(self):
+        from suppliers.models import Supplier, SupplierContact
+
+        user = User.objects.create_user(
+            username="portal", email="portal@example.test", password="portal-pass-123"
+        )
+        organization = Organization.objects.create(name="Comprador", slug="buyer-nav")
+        supplier = Supplier.objects.create(
+            organization=organization, legal_name="Proveedor", tax_id="900100200"
+        )
+        SupplierContact.objects.create(
+            supplier=supplier,
+            first_name="Portal",
+            email=user.email,
+            portal_user=user,
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("home"))
+
+        self.assertContains(response, "Mi portal")
+        self.assertNotContains(response, ">Integraciones</a>")
+        self.assertNotContains(response, ">Revisiones</a>")
+
 
 class DemoDataTests(TestCase):
     def test_seed_command_is_idempotent(self):

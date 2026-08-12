@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: supplier_hub
+      POSTGRES_USER: supplier_hub
+      POSTGRES_PASSWORD: ${SUPPLIER_HUB_DB_PASSWORD:?Define SUPPLIER_HUB_DB_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supplier_hub -d supplier_hub"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  web:
+    build: .
+    environment:
+      SUPPLIER_HUB_SECRET_KEY: ${SUPPLIER_HUB_SECRET_KEY:?Define SUPPLIER_HUB_SECRET_KEY in .env}
+      SUPPLIER_HUB_DEBUG: "false"
+      SUPPLIER_HUB_ALLOWED_HOSTS: ${SUPPLIER_HUB_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      SUPPLIER_HUB_TIME_ZONE: ${SUPPLIER_HUB_TIME_ZONE:-America/Bogota}
+      SUPPLIER_HUB_DB_ENGINE: postgresql
+      SUPPLIER_HUB_DB_NAME: supplier_hub
+      SUPPLIER_HUB_DB_USER: supplier_hub
+      SUPPLIER_HUB_DB_PASSWORD: ${SUPPLIER_HUB_DB_PASSWORD}
+      SUPPLIER_HUB_DB_HOST: db
+      SUPPLIER_HUB_SEED_DEMO: ${SUPPLIER_HUB_SEED_DEMO:-false}
+      SUPPLIER_HUB_HTTPS: ${SUPPLIER_HUB_HTTPS:-false}
+      SUPPLIER_HUB_CSRF_TRUSTED_ORIGINS: ${SUPPLIER_HUB_CSRF_TRUSTED_ORIGINS:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_data:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/salud/', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  media_data:

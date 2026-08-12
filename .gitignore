@@ -7,6 +7,8 @@ sites/
 secrets/
 db.sqlite3
 media/
+backups/
+staticfiles/
 
 # Real or private test documents
 samples/private/
@@ -25,4 +27,3 @@ node_modules/
 .vscode/
 .DS_Store
 Thumbs.db
-

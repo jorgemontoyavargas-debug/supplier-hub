@@ -9,6 +9,7 @@
       :root { color-scheme: light; font-family: Inter, system-ui, sans-serif; }
       body { margin: 0; color: #17211b; background: #f5f7f4; }
       header { background: #123c2d; color: white; padding: 1rem 2rem; }
+      nav { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem 1rem; }
       header a { color: white; text-decoration: none; font-weight: 700; }
       main { width: min(68rem, calc(100% - 2rem)); margin: 3rem auto; }
       .hero { background: white; border-radius: 1rem; padding: clamp(2rem, 6vw, 5rem); box-shadow: 0 1rem 3rem #153c2912; }
@@ -19,17 +20,23 @@
       .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 2rem; }
       .card { background: white; border: 1px solid #dce5df; border-radius: .75rem; padding: 1.25rem; }
       .muted { color: #5b6860; }
+      .nav-action { border: 0; padding: 0; background: none; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+      .inline { display: inline; margin: 0; }
+      input, textarea, select { max-width: 100%; padding: .65rem; border: 1px solid #aab8af; border-radius: .4rem; font: inherit; }
+      button { cursor: pointer; }
     </style>
   </head>
   <body>
-    <header>
+    <header><nav aria-label="Navegación principal">
       <a href="{% url 'home' %}">Supplier Hub</a>
+      {% if has_buyer_access %}<a href="{% url 'supplier_list' %}">Proveedores</a>{% endif %}
+      {% if has_review_access %}<a href="{% url 'review_inbox' %}">Revisiones</a>{% endif %}
+      {% if has_integration_access %}<a href="{% url 'supplier_csv' %}">Integraciones</a>{% endif %}
+      {% if has_supplier_access %}<a href="{% url 'supplier_portal' %}">Mi portal</a>{% endif %}
       {% if user.is_authenticated %}
-        · <a href="{% url 'supplier_list' %}">Proveedores</a>
-        · <a href="{% url 'review_inbox' %}">Revisiones</a>
-        · <a href="{% url 'supplier_csv' %}">Integraciones</a>
+        <form class="inline" method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="nav-action" type="submit">Salir</button></form>
       {% endif %}
-    </header>
+    </nav></header>
     <main>
       {% for message in messages %}<div class="card">{{ message }}</div>{% endfor %}
       {% block content %}{% endblock %}

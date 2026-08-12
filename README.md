@@ -6,8 +6,8 @@ un ERP y admite capacidades opcionales de inteligencia artificial local.
 
 ## Estado
 
-Hito H0 en construcción. Ya existe un núcleo Django con modelos iniciales,
-autenticación, panel, administración, healthcheck, migraciones y datos demo. El
+Versión candidata `0.1.0-rc.1`. El producto cubre onboarding, expediente,
+revisión, homologación, vigencias, integración abierta y asistencia local. El
 nombre es provisional.
 
 ## Principios
@@ -54,3 +54,13 @@ Supplier Hub se distribuye bajo GNU Affero General Public License v3.0
 (AGPL-3.0-only). Consulta [LICENSE](LICENSE).
 
 Consulta [PROJECT.md](PROJECT.md) para el alcance y los hitos activos.
+
+## Documentación
+
+- [Instalación](docs/operations/INSTALLATION.md)
+- [Administrador](docs/guides/ADMIN_GUIDE.md)
+- [Proveedor](docs/guides/SUPPLIER_GUIDE.md)
+- [Desarrollador](docs/guides/DEVELOPER_GUIDE.md)
+- [API OpenAPI](docs/api/openapi.yaml)
+- [IA local](docs/ai/LOCAL_AI.md)
+- [Copias y restauración](docs/operations/BACKUP_RESTORE.md)
