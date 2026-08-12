@@ -28,9 +28,11 @@ docker compose exec -T db pg_restore -U supplier_hub -d supplier_hub < "$BACKUP_
 docker compose start web
 
 attempt=0
-until docker compose exec -T web python manage.py check >/dev/null 2>&1; do
+until curl --fail --silent http://127.0.0.1:8000/salud/ | grep -q '"database": "ok"'; do
   attempt=$((attempt + 1))
-  if [ "$attempt" -ge 30 ]; then
+  if [ "$attempt" -ge 60 ]; then
+    docker compose ps
+    docker compose logs --tail 100 web db
     echo "La aplicación no regresó después de restaurar." >&2
     exit 1
   fi
@@ -42,4 +44,3 @@ docker compose exec -T web tar -xzf - -C /app < "$BACKUP_DIRECTORY/media.tar.gz"
 docker compose exec -T web python manage.py migrate --check
 
 echo "Restauración completada."
-

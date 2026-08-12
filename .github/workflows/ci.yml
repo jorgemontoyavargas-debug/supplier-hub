@@ -59,7 +59,7 @@ jobs:
             "from suppliers.models import Supplier; Supplier.objects.filter(tax_id='901000002').delete(); assert not Supplier.objects.filter(tax_id='901000002').exists()"
           CONFIRM_RESTORE=yes ./scripts/restore.sh "$backup_dir"
           docker compose exec -T web python manage.py shell -c \
-            "from suppliers.models import Supplier; assert Supplier.objects.filter(tax_id='901000002').exists()"
+            "from suppliers.models import Supplier; assert Supplier.objects.filter(tax_id='901000002').exists(); print('Proveedor restaurado correctamente')"
           curl --fail --silent http://127.0.0.1:8000/salud/ | grep -q '"status": "ok"'
       - if: always()
         run: docker compose down -v

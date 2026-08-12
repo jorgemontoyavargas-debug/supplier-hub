@@ -32,5 +32,22 @@ try {
 } finally {
     docker compose start web
 }
+$Healthy = $false
+for ($Attempt = 0; $Attempt -lt 60; $Attempt++) {
+    try {
+        $Health = Invoke-RestMethod -Uri "http://127.0.0.1:8000/salud/" -TimeoutSec 3
+        if ($Health.status -eq "ok" -and $Health.database -eq "ok") {
+            $Healthy = $true
+            break
+        }
+    } catch {
+        Start-Sleep -Seconds 2
+    }
+}
+if (-not $Healthy) {
+    docker compose ps
+    docker compose logs --tail 100 web db
+    throw "La aplicacion no regreso despues de restaurar."
+}
+docker compose exec -T web python manage.py migrate --check
 Write-Host "Restauración completada. Ejecuta scripts/verify-deployment.ps1."
-
