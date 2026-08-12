@@ -26,6 +26,7 @@ urlpatterns = [
     path('homologaciones/', include('qualifications.urls')),
     path('api/', include('integrations.urls')),
     path('integraciones/', include('integrations.web_urls')),
+    path('asistente/', include('intelligence.urls')),
     path('salud/', core_views.health, name='health'),
     path('panel/', core_views.dashboard, name='dashboard'),
     path('', core_views.home, name='home'),

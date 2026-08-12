@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Asistencia — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Asistencia local y verificable</p>
+  <h1>{{ case.supplier.legal_name }}</h1>
+  <div class="cards">
+    <article class="card"><strong>{{ summary.total_requirements }}</strong><p>requisitos aplicables</p></article>
+    <article class="card"><strong>{{ summary.missing|length }}</strong><p>requisitos faltantes</p></article>
+    <article class="card"><strong>{{ summary.expiring_documents }}</strong><p>documentos próximos a vencer</p></article>
+    <article class="card"><strong>{{ summary.pending_suggestions }}</strong><p>propuestas por confirmar</p></article>
+  </div>
+  {% if summary.missing %}<section class="card"><h2>Faltantes</h2><ul>{% for item in summary.missing %}<li>{{ item }}</li>{% endfor %}</ul></section>{% endif %}
+  <section class="card">
+    <h2>Siguientes acciones propuestas</h2>
+    <ul>{% for action in summary.actions %}<li>{{ action.label }}</li>{% empty %}<li>No hay acciones pendientes detectadas.</li>{% endfor %}</ul>
+    <p class="muted">El asistente propone; ninguna acción se ejecuta sin confirmación.</p>
+  </section>
+  <h2>Documentos</h2>
+  {% for document in documents %}
+    <section class="card">
+      <h3>{{ document.original_filename }}</h3>
+      <form method="post" action="{% url 'analyze_evidence' document.id %}">{% csrf_token %}<button class="button" type="submit">Analizar localmente</button></form>
+      {% for run in document.ai_runs.all %}
+        <p>{{ run.provider }} / {{ run.model_name }} · {{ run.get_status_display }}</p>
+        {% if run.error %}<p>{{ run.error }}</p>{% endif %}
+        {% for suggestion in run.suggestions.all %}
+          <article>
+            <strong>{{ suggestion.field_code }}</strong>: {{ suggestion.proposed_value.value }}
+            <p>Evidencia: “{{ suggestion.evidence_text }}”{% if suggestion.page_number %}, página {{ suggestion.page_number }}{% endif %}. Confianza: {{ suggestion.confidence }}</p>
+            {% if suggestion.status == "pending" %}
+              <form method="post" action="{% url 'resolve_ai_suggestion' suggestion.id %}">
+                {% csrf_token %}
+                <button class="button" name="decision" value="accept">Aceptar</button>
+                <button name="decision" value="reject">Rechazar</button>
+              </form>
+            {% else %}<p>{{ suggestion.get_status_display }}</p>{% endif %}
+          </article>
+        {% endfor %}
+      {% endfor %}
+    </section>
+  {% empty %}<p>No hay documentos para analizar.</p>{% endfor %}
+  <p class="muted">Las propuestas nunca se aplican automáticamente. Revisa siempre la evidencia antes de aceptar.</p>
+{% endblock %}

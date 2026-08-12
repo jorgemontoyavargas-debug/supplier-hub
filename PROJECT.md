@@ -70,11 +70,14 @@ Estado: completado el 2026-08-12. Evidencia en
 
 ### H4 — Asistencia con IA
 
-- Procesamiento documental local opcional.
-- Extracción estructurada con evidencia.
-- Prellenado sujeto a confirmación.
-- Detector de faltantes y resumen para el revisor.
-- Evaluaciones repetibles sobre documentos sintéticos y anonimizados.
+- [x] Procesamiento documental local opcional.
+- [x] Extracción estructurada con evidencia.
+- [x] Prellenado sujeto a confirmación.
+- [x] Detector de faltantes y resumen para el revisor.
+- [x] Evaluaciones repetibles sobre documentos sintéticos y anonimizados.
+
+Estado: completado el 2026-08-12. Evidencia en
+`docs/delivery/H4_REPORT.md`.
 
 ### H5 — Primera publicación
 

@@ -4,6 +4,7 @@
   <p class="eyebrow">{{ case.get_status_display }}</p>
   <h1>{{ case.template.name }}</h1>
   <p>{{ case.supplier.legal_name }}</p>
+  <p><a class="button" href="{% url 'case_assistance' case.id %}">Asistencia y revisión automática</a></p>
   {% for review in case.reviews.all %}
     <section class="card">
       <strong>{{ review.get_decision_display }}</strong>

@@ -4,6 +4,7 @@
   <p class="eyebrow">{{ case.get_status_display }}</p>
   <h1>{{ case.supplier.legal_name }}</h1>
   <p>{{ case.template.name }}</p>
+  <p><a class="button" href="{% url 'case_assistance' case.id %}">Ver resumen y propuestas</a></p>
   {% if errors %}<section class="card"><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></section>{% endif %}
   {% if case.status == "submitted" %}
     <form method="post">{% csrf_token %}<button class="button" name="action" value="start_review">Iniciar revisión</button></form>

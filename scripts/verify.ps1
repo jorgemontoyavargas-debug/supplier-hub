@@ -10,6 +10,7 @@ if (-not (Test-Path $PythonExecutable)) {
 & $PythonExecutable manage.py check
 & $PythonExecutable manage.py makemigrations --check --dry-run
 & $PythonExecutable manage.py test
+& $PythonExecutable manage.py evaluate_local_ai
 & $PythonExecutable -m compileall -q accounts config core organizations qualifications suppliers
 
 $env:SUPPLIER_HUB_DEBUG = "false"

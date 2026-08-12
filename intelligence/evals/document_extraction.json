@@ -1,0 +1,29 @@
+[
+  {
+    "name": "nit_y_vencimiento_iso",
+    "pages": [
+      "Certificamos que el NIT: 901.234.567-8 se encuentra activo. Vigencia hasta 2028-06-30."
+    ],
+    "expected": {
+      "supplier.tax_id": "9012345678",
+      "document.expires_at": "2028-06-30"
+    }
+  },
+  {
+    "name": "documento_sin_campos",
+    "pages": [
+      "Este documento sintético no contiene identificación fiscal ni fecha de vencimiento."
+    ],
+    "expected": {}
+  },
+  {
+    "name": "fecha_con_barras",
+    "pages": [
+      "RUT identificación 800-456-789. Vencimiento del certificado: 2027/11/15."
+    ],
+    "expected": {
+      "supplier.tax_id": "800456789",
+      "document.expires_at": "2027-11-15"
+    }
+  }
+]
