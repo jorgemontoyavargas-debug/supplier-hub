@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AuditEvent
+from .models import AuditEvent, Notification
 
 
 @admin.register(AuditEvent)
@@ -26,6 +26,13 @@ class AuditEventAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ("created_at", "recipient", "kind", "title", "read_at")
+    list_filter = ("kind", "organization")
+    search_fields = ("title", "body")
 
 
 # Register your models here.

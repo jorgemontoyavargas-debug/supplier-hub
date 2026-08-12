@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     EvidenceDocument,
+    CaseReview,
     QualificationCase,
     QualificationTemplate,
     Requirement,
@@ -32,11 +33,17 @@ class EvidenceDocumentInline(admin.TabularInline):
     extra = 0
 
 
+class CaseReviewInline(admin.TabularInline):
+    model = CaseReview
+    extra = 0
+    readonly_fields = ("reviewer", "decision", "comment", "valid_until", "created_at")
+
+
 @admin.register(QualificationCase)
 class QualificationCaseAdmin(admin.ModelAdmin):
     list_display = ("supplier", "template", "status", "created_at")
     list_filter = ("status", "organization")
     autocomplete_fields = ("organization", "supplier", "template")
-    inlines = (RequirementResponseInline, EvidenceDocumentInline)
+    inlines = (RequirementResponseInline, EvidenceDocumentInline, CaseReviewInline)
 
 # Register your models here.

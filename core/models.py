@@ -45,4 +45,25 @@ class AuditEvent(models.Model):
     def __str__(self):
         return f"{self.action}: {self.object_type}/{self.object_id}"
 
+
+class Notification(UUIDTimeStampedModel):
+    organization = models.ForeignKey(
+        "organizations.Organization",
+        on_delete=models.CASCADE,
+        related_name="notifications",
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+    )
+    kind = models.CharField(max_length=80)
+    title = models.CharField(max_length=250)
+    body = models.TextField(blank=True)
+    deduplication_key = models.CharField(max_length=250, unique=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
 # Create your models here.

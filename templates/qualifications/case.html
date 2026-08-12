@@ -4,6 +4,13 @@
   <p class="eyebrow">{{ case.get_status_display }}</p>
   <h1>{{ case.template.name }}</h1>
   <p>{{ case.supplier.legal_name }}</p>
+  {% for review in case.reviews.all %}
+    <section class="card">
+      <strong>{{ review.get_decision_display }}</strong>
+      <p>{{ review.comment }}</p>
+      {% if review.valid_until %}<p>Vigencia: {{ review.valid_until }}</p>{% endif %}
+    </section>
+  {% endfor %}
   {% if errors %}
     <section class="card"><h2>Revisa lo siguiente</h2><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></section>
   {% endif %}
@@ -15,7 +22,9 @@
         {% if row.requirement.instructions %}<p class="muted">{{ row.requirement.instructions }}</p>{% endif %}
         {% if row.requirement.kind == "document" %}
           <p><input id="requirement_{{ row.requirement.id }}" name="requirement_{{ row.requirement.id }}" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"></p>
-          {% if row.document %}<p>Actual: <a href="{% url 'download_evidence' row.document.id %}">{{ row.document.original_filename }}</a></p>{% endif %}
+          <p><label>Fecha de expedición <input type="date" name="requirement_{{ row.requirement.id }}_issued_at"></label></p>
+          <p><label>Fecha de vencimiento <input type="date" name="requirement_{{ row.requirement.id }}_expires_at"></label></p>
+          {% if row.document %}<p>Actual: <a href="{% url 'download_evidence' row.document.id %}">{{ row.document.original_filename }}</a>{% if row.document.expires_at %} · vence {{ row.document.expires_at }}{% endif %}</p>{% endif %}
         {% else %}
           <p><textarea id="requirement_{{ row.requirement.id }}" name="requirement_{{ row.requirement.id }}" rows="3">{% if row.response %}{{ row.response.value.value }}{% endif %}</textarea></p>
         {% endif %}

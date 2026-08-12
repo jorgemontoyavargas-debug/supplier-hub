@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Revisiones — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Homologación</p>
+  <h1>Bandeja de revisión</h1>
+  <div class="cards">
+    {% for case in cases %}
+      <article class="card">
+        <h2><a href="{% url 'review_case' case.id %}">{{ case.supplier.legal_name }}</a></h2>
+        <p>{{ case.template.name }} · {{ case.get_status_display }}</p>
+      </article>
+    {% empty %}<article class="card">No hay expedientes pendientes.</article>{% endfor %}
+  </div>
+{% endblock %}
+

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Revisar {{ case.supplier.legal_name }} — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">{{ case.get_status_display }}</p>
+  <h1>{{ case.supplier.legal_name }}</h1>
+  <p>{{ case.template.name }}</p>
+  {% if errors %}<section class="card"><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if case.status == "submitted" %}
+    <form method="post">{% csrf_token %}<button class="button" name="action" value="start_review">Iniciar revisión</button></form>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {% for row in rows %}
+      <section class="card">
+        <h2>{{ row.requirement.label }}</h2>
+        {% if row.response %}<p>{{ row.response.value.value }}</p>{% endif %}
+        {% if row.document %}<p><a href="{% url 'download_evidence' row.document.id %}">{{ row.document.original_filename }}</a></p>{% endif %}
+        {% if row.response %}
+          <label><input type="radio" name="response_{{ row.response.id }}" value="accepted"> Aceptada</label>
+          <label><input type="radio" name="response_{{ row.response.id }}" value="rejected"> Rechazada</label>
+          <p><textarea name="response_comment_{{ row.response.id }}" placeholder="Comentario del revisor">{{ row.response.reviewer_comment }}</textarea></p>
+        {% endif %}
+      </section>
+    {% endfor %}
+    {% if case.status == "in_review" %}
+      <section class="card">
+        <label for="comment"><strong>Fundamento de la decisión</strong></label>
+        <p><textarea id="comment" name="comment" rows="4" required></textarea></p>
+        <label for="valid_until">Vigencia si se aprueba</label>
+        <p><input id="valid_until" type="date" name="valid_until"></p>
+        <button class="button" name="action" value="changes_requested">Solicitar correcciones</button>
+        {% if membership.role == "admin" or membership.role == "approver" %}
+          <button class="button" name="action" value="approved">Aprobar</button>
+          <button class="button" name="action" value="conditional">Aprobar condicionalmente</button>
+          <button class="button" name="action" value="rejected">Rechazar</button>
+        {% endif %}
+      </section>
+    {% endif %}
+  </form>
+{% endblock %}

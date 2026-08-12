@@ -14,5 +14,10 @@
       <article class="card">Aún no tienes una organización asignada.</article>
     {% endfor %}
   </div>
+  <h2>Alertas</h2>
+  <div class="cards">
+    {% for notification in notifications %}
+      <article class="card"><strong>{{ notification.title }}</strong><p>{{ notification.body }}</p></article>
+    {% empty %}<article class="card">No tienes alertas pendientes.</article>{% endfor %}
+  </div>
 {% endblock %}
-

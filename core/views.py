@@ -30,6 +30,11 @@ def home(request):
 @login_required
 def dashboard(request):
     memberships = request.user.memberships.select_related("organization")
-    return render(request, "core/dashboard.html", {"memberships": memberships})
+    notifications = request.user.notifications.filter(read_at__isnull=True)[:10]
+    return render(
+        request,
+        "core/dashboard.html",
+        {"memberships": memberships, "notifications": notifications},
+    )
 
 # Create your views here.

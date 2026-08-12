@@ -26,6 +26,7 @@
       <a href="{% url 'home' %}">Supplier Hub</a>
       {% if user.is_authenticated %}
         · <a href="{% url 'supplier_list' %}">Proveedores</a>
+        · <a href="{% url 'review_inbox' %}">Revisiones</a>
       {% endif %}
     </header>
     <main>
@@ -34,4 +35,3 @@
     </main>
   </body>
 </html>
-

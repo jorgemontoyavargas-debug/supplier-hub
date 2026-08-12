@@ -114,6 +114,7 @@ class QualificationCase(UUIDTimeStampedModel):
     )
     submitted_at = models.DateTimeField(null=True, blank=True)
     decided_at = models.DateTimeField(null=True, blank=True)
+    valid_until = models.DateField(null=True, blank=True)
 
     class Meta:
         ordering = ("-created_at",)
@@ -201,6 +202,29 @@ class EvidenceDocument(UUIDTimeStampedModel):
         null=True,
         related_name="uploaded_evidence_documents",
     )
+
+    class Meta:
+        ordering = ("-created_at",)
+
+
+class CaseReview(UUIDTimeStampedModel):
+    class Decision(models.TextChoices):
+        CHANGES_REQUESTED = "changes_requested", _("Correcciones solicitadas")
+        APPROVED = "approved", _("Aprobado")
+        CONDITIONAL = "conditional", _("Aprobado condicionalmente")
+        REJECTED = "rejected", _("Rechazado")
+
+    case = models.ForeignKey(
+        QualificationCase, on_delete=models.CASCADE, related_name="reviews"
+    )
+    reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="qualification_reviews",
+    )
+    decision = models.CharField(max_length=30, choices=Decision.choices)
+    comment = models.TextField()
+    valid_until = models.DateField(null=True, blank=True)
 
     class Meta:
         ordering = ("-created_at",)

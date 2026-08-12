@@ -51,9 +51,12 @@ Estado: completado el 2026-08-12. Evidencia en
 
 ### H2 — Homologación funcional
 
-- Plantillas, requisitos, cuestionarios y documentos versionados.
-- Revisión, correcciones, decisión y trazabilidad.
-- Vencimientos y notificaciones internas.
+- [x] Plantillas, requisitos, cuestionarios y documentos versionados.
+- [x] Revisión, correcciones, decisión y trazabilidad.
+- [x] Vencimientos y notificaciones internas.
+
+Estado: completado el 2026-08-12. Evidencia en
+`docs/delivery/H2_REPORT.md`.
 
 ### H3 — Integración abierta
 
