@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.models import AuditEvent
+from integrations.services import publish_event
 from organizations.models import Membership
 
 from .forms import SupplierCreateForm, SupplierRegistrationForm
@@ -53,6 +54,16 @@ def supplier_create(request):
                 action="supplier.created",
                 object_type="supplier",
                 object_id=str(supplier.id),
+            )
+            publish_event(
+                organization=membership.organization,
+                event_type="supplier.created",
+                data={
+                    "id": str(supplier.id),
+                    "tax_id": supplier.tax_id,
+                    "legal_name": supplier.legal_name,
+                    "status": supplier.status,
+                },
             )
             messages.success(request, "Proveedor creado. Ya puedes generar su invitación.")
             return redirect("supplier_detail", supplier_id=supplier.id)

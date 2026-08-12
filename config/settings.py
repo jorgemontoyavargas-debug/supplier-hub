@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'organizations',
     'suppliers',
     'qualifications',
+    'integrations',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Importar proveedores — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Integraciones</p>
+  <h1>Proveedores en CSV</h1>
+  <p><a class="button" href="?download=1">Descargar proveedores</a></p>
+  <form class="card" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="file"><strong>Importar o actualizar</strong></label>
+    <p>El archivo debe estar en UTF-8 e incluir las columnas <code>tax_id</code> y <code>legal_name</code>.</p>
+    <input id="file" type="file" name="file" accept=".csv" required>
+    <button class="button" type="submit">Importar CSV</button>
+  </form>
+{% endblock %}

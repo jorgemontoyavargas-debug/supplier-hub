@@ -10,6 +10,7 @@ from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.models import AuditEvent
+from integrations.services import publish_event
 from organizations.models import Membership
 from suppliers.models import Supplier
 
@@ -347,6 +348,16 @@ def review_case(request, case_id):
                     object_type="qualification_case",
                     object_id=str(case.id),
                     data={"valid_until": valid_until.isoformat() if valid_until else None},
+                )
+                publish_event(
+                    organization=case.organization,
+                    event_type=f"qualification.{action}",
+                    data={
+                        "case_id": str(case.id),
+                        "supplier_id": str(case.supplier_id),
+                        "status": case.status,
+                        "valid_until": valid_until.isoformat() if valid_until else None,
+                    },
                 )
                 messages.success(request, "Decisión registrada.")
                 return redirect("review_case", case_id=case.id)

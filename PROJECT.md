@@ -60,10 +60,13 @@ Estado: completado el 2026-08-12. Evidencia en
 
 ### H3 — Integración abierta
 
-- Importación y exportación CSV.
-- API documentada y webhooks firmados.
-- Identificadores externos, idempotencia y bitácora de sincronización.
-- Conector de referencia para ERPNext si no compromete el núcleo.
+- [x] Importación y exportación CSV.
+- [x] API documentada y webhooks firmados.
+- [x] Identificadores externos, idempotencia y bitácora de sincronización.
+- [x] Conector de referencia para ERPNext sin comprometer el núcleo.
+
+Estado: completado el 2026-08-12. Evidencia en
+`docs/delivery/H3_REPORT.md`.
 
 ### H4 — Asistencia con IA
 

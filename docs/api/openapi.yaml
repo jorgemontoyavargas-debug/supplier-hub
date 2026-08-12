@@ -1,0 +1,78 @@
+openapi: 3.1.0
+info:
+  title: Supplier Hub API
+  version: 0.1.0
+  description: Contrato canónico abierto para integrar proveedores.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+paths:
+  /suppliers:
+    get:
+      summary: Lista proveedores de la organización autenticada
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+      responses:
+        "200":
+          description: Lista de proveedores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Supplier" }
+    post:
+      summary: Crea o actualiza un proveedor por identificación o código externo
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, maxLength: 150 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SupplierUpsert" }
+      responses:
+        "200": { description: Proveedor actualizado }
+        "201": { description: Proveedor creado }
+        "409": { description: Clave idempotente reutilizada con otra solicitud }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    ExternalCode:
+      type: object
+      required: [system, code]
+      properties:
+        system: { type: string }
+        company: { type: string }
+        code: { type: string }
+    SupplierUpsert:
+      type: object
+      required: [legal_name, tax_id]
+      properties:
+        legal_name: { type: string }
+        trade_name: { type: string }
+        tax_id: { type: string }
+        country_code: { type: string, minLength: 2, maxLength: 2, default: CO }
+        external_code: { $ref: "#/components/schemas/ExternalCode" }
+    Supplier:
+      allOf:
+        - $ref: "#/components/schemas/SupplierUpsert"
+        - type: object
+          required: [id, status, updated_at]
+          properties:
+            id: { type: string, format: uuid }
+            status: { type: string }
+            updated_at: { type: string, format: date-time }
+            external_codes:
+              type: array
+              items: { $ref: "#/components/schemas/ExternalCode" }
