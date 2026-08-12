@@ -12,15 +12,15 @@
 - [x] Pruebas locales, comprobación endurecida, estáticos y smoke HTTP.
 - [x] Revisión visual sin errores de consola.
 
-## Pendiente para cerrar H5
+## Cierre verificado
 
-- [ ] Ejecutar el despliegue Docker/PostgreSQL real y verificar salud.
-- [ ] Ejecutar copia y restauración sobre ese despliegue.
-- [ ] Crear repositorio público y ejecutar CI.
-- [ ] Corregir cualquier hallazgo del CI de contenedores.
-- [ ] Generar paquete desde un commit limpio y publicar release.
+- [x] Ejecutar el despliegue Docker/PostgreSQL real y verificar salud.
+- [x] Ejecutar copia y restauración sobre ese despliegue.
+- [x] Crear repositorio público y ejecutar CI.
+- [x] Corregir cualquier hallazgo del CI de contenedores.
+- [x] Generar paquete desde un commit limpio y publicar release.
 
-El equipo actual no tiene Docker ni WSL. GitHub CLI está instalado, pero no hay
-sesión autenticada. Estos puntos no se declararán completados hasta contar con
-evidencia externa real.
-
+La ejecución de GitHub Actions desplegó los contenedores, verificó PostgreSQL,
+eliminó un proveedor de prueba, restauró la copia y comprobó tanto el registro
+recuperado como la salud HTTP final. Consulta `H5_REPORT.md` para las URLs y la
+trazabilidad de la publicación.

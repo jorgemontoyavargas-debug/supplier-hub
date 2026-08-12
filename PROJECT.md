@@ -82,12 +82,13 @@ Estado: completado el 2026-08-12. Evidencia en
 ### H5 — Primera publicación
 
 - [x] Instalación documentada.
-- [ ] Copias de seguridad y restauración probadas en PostgreSQL.
+- [x] Copias de seguridad y restauración probadas en PostgreSQL.
 - [x] Pruebas de permisos y recorrido end-to-end local.
 - [x] Guías de administrador, proveedor y desarrollador.
-- [ ] Release reproducible publicado después de CI de contenedores.
+- [x] Release reproducible publicado después de CI de contenedores.
 
-Estado: en progreso. Consulta `docs/delivery/H5_ACCEPTANCE.md`.
+Estado: completado el 2026-08-12. Evidencia en
+`docs/delivery/H5_REPORT.md`.
 
 ## Definición global de terminado
 

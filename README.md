@@ -10,6 +10,9 @@ Versión candidata `0.1.0-rc.1`. El producto cubre onboarding, expediente,
 revisión, homologación, vigencias, integración abierta y asistencia local. El
 nombre es provisional.
 
+- [Repositorio público](https://github.com/jorgemontoyavargas-debug/supplier-hub)
+- [Primera prerelease](https://github.com/jorgemontoyavargas-debug/supplier-hub/releases/tag/v0.1.0-rc.1)
+
 ## Principios
 
 - La funcionalidad esencial no depende de servicios de pago.
