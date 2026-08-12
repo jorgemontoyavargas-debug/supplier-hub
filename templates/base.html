@@ -22,8 +22,16 @@
     </style>
   </head>
   <body>
-    <header><a href="{% url 'home' %}">Supplier Hub</a></header>
-    <main>{% block content %}{% endblock %}</main>
+    <header>
+      <a href="{% url 'home' %}">Supplier Hub</a>
+      {% if user.is_authenticated %}
+        · <a href="{% url 'supplier_list' %}">Proveedores</a>
+      {% endif %}
+    </header>
+    <main>
+      {% for message in messages %}<div class="card">{{ message }}</div>{% endfor %}
+      {% block content %}{% endblock %}
+    </main>
   </body>
 </html>
 

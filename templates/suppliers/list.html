@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Proveedores — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Proveedores</p>
+  <h1>Directorio</h1>
+  <p><a class="button" href="{% url 'supplier_create' %}">Nuevo proveedor</a></p>
+  <div class="cards">
+    {% for supplier in suppliers %}
+      <article class="card">
+        <h2><a href="{% url 'supplier_detail' supplier.id %}">{{ supplier.legal_name }}</a></h2>
+        <p>{{ supplier.tax_id }} · {{ supplier.get_status_display }}</p>
+      </article>
+    {% empty %}
+      <article class="card">Aún no hay proveedores.</article>
+    {% endfor %}
+  </div>
+{% endblock %}
+

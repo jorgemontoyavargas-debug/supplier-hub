@@ -1,5 +1,10 @@
+import hashlib
+import secrets
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from core.models import UUIDTimeStampedModel
@@ -135,5 +140,58 @@ class ExternalSupplierCode(UUIDTimeStampedModel):
                 name="unique_external_supplier_code",
             )
         ]
+
+
+class SupplierInvitation(UUIDTimeStampedModel):
+    supplier = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, related_name="invitations"
+    )
+    email = models.EmailField(_("correo electrónico"))
+    token_hash = models.CharField(max_length=64, unique=True, editable=False)
+    expires_at = models.DateTimeField()
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    invited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="sent_supplier_invitations",
+    )
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    @staticmethod
+    def hash_token(raw_token):
+        return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+
+    @classmethod
+    def issue(cls, *, supplier, email, invited_by, lifetime=timedelta(days=7)):
+        now = timezone.now()
+        cls.objects.filter(
+            supplier=supplier, accepted_at__isnull=True, expires_at__gt=now
+        ).update(expires_at=now)
+        raw_token = secrets.token_urlsafe(32)
+        invitation = cls.objects.create(
+            supplier=supplier,
+            email=email.lower().strip(),
+            token_hash=cls.hash_token(raw_token),
+            expires_at=now + lifetime,
+            invited_by=invited_by,
+        )
+        return invitation, raw_token
+
+    @property
+    def is_valid(self):
+        return self.accepted_at is None and self.expires_at > timezone.now()
+
+    @classmethod
+    def find_valid(cls, raw_token):
+        try:
+            invitation = cls.objects.select_related(
+                "supplier", "supplier__organization"
+            ).get(token_hash=cls.hash_token(raw_token))
+        except cls.DoesNotExist:
+            return None
+        return invitation if invitation.is_valid else None
 
 # Create your models here.

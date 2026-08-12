@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Portal del proveedor — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Portal del proveedor</p>
+  <h1>Tus empresas</h1>
+  <div class="cards">
+    {% for contact in contacts %}
+      <article class="card">
+        <h2>{{ contact.supplier.legal_name }}</h2>
+        <p>{{ contact.supplier.tax_id }} · {{ contact.supplier.get_status_display }}</p>
+        {% with case=contact.supplier.qualification_cases.first %}
+          {% if case %}
+            <a class="button" href="{% url 'qualification_case' case.id %}">Continuar homologación</a>
+          {% else %}
+            <form method="post" action="{% url 'start_qualification' contact.supplier.id %}">
+              {% csrf_token %}
+              <button class="button" type="submit">Iniciar homologación</button>
+            </form>
+          {% endif %}
+        {% endwith %}
+      </article>
+    {% empty %}
+      <article class="card">Tu usuario no está asociado a un proveedor.</article>
+    {% endfor %}
+  </div>
+{% endblock %}

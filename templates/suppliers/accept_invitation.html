@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Aceptar invitación — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Invitación de {{ invitation.supplier.organization.name }}</p>
+  <h1>Activa el acceso de {{ invitation.supplier.legal_name }}</h1>
+  <p>La cuenta quedará asociada a {{ invitation.email }}.</p>
+  <form class="card" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="button" type="submit">Crear cuenta</button>
+  </form>
+{% endblock %}
+

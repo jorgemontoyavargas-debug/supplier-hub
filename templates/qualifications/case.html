@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Homologación — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">{{ case.get_status_display }}</p>
+  <h1>{{ case.template.name }}</h1>
+  <p>{{ case.supplier.legal_name }}</p>
+  {% if errors %}
+    <section class="card"><h2>Revisa lo siguiente</h2><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></section>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for row in rows %}
+      <section class="card">
+        <label for="requirement_{{ row.requirement.id }}"><strong>{{ row.requirement.label }}</strong>{% if row.requirement.is_required %} *{% endif %}</label>
+        {% if row.requirement.instructions %}<p class="muted">{{ row.requirement.instructions }}</p>{% endif %}
+        {% if row.requirement.kind == "document" %}
+          <p><input id="requirement_{{ row.requirement.id }}" name="requirement_{{ row.requirement.id }}" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"></p>
+          {% if row.document %}<p>Actual: <a href="{% url 'download_evidence' row.document.id %}">{{ row.document.original_filename }}</a></p>{% endif %}
+        {% else %}
+          <p><textarea id="requirement_{{ row.requirement.id }}" name="requirement_{{ row.requirement.id }}" rows="3">{% if row.response %}{{ row.response.value.value }}{% endif %}</textarea></p>
+        {% endif %}
+      </section>
+    {% endfor %}
+    {% if case.status == "draft" or case.status == "changes_requested" %}
+      <button class="button" type="submit" name="action" value="save">Guardar borrador</button>
+      <button class="button" type="submit" name="action" value="submit">Enviar a revisión</button>
+    {% endif %}
+  </form>
+{% endblock %}

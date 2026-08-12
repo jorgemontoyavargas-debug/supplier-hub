@@ -22,6 +22,8 @@ from core import views as core_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cuentas/', include('django.contrib.auth.urls')),
+    path('proveedores/', include('suppliers.urls')),
+    path('homologaciones/', include('qualifications.urls')),
     path('salud/', core_views.health, name='health'),
     path('panel/', core_views.dashboard, name='dashboard'),
     path('', core_views.home, name='home'),

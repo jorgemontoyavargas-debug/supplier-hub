@@ -190,7 +190,7 @@ class EvidenceDocument(UUIDTimeStampedModel):
         blank=True,
         related_name="documents",
     )
-    file = models.FileField(upload_to=evidence_upload_path)
+    file = models.FileField(upload_to=evidence_upload_path, max_length=500)
     original_filename = models.CharField(max_length=255)
     issued_at = models.DateField(null=True, blank=True)
     expires_at = models.DateField(null=True, blank=True)

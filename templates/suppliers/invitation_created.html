@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Invitación creada — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">Invitación creada</p>
+  <h1>{{ supplier.legal_name }}</h1>
+  <p>Comparte este enlace con {{ invitation.email }}. Por seguridad solo se muestra ahora y vence el {{ invitation.expires_at }}.</p>
+  <div class="card"><a href="{{ invitation_url }}">{{ invitation_url }}</a></div>
+{% endblock %}
+

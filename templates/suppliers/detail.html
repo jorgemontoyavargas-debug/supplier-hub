@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ supplier.legal_name }} — Supplier Hub{% endblock %}
+{% block content %}
+  <p class="eyebrow">{{ supplier.get_status_display }}</p>
+  <h1>{{ supplier.legal_name }}</h1>
+  <p>{{ supplier.tax_id }} · {{ supplier.country_code }}</p>
+  <section class="card">
+    <h2>Contactos</h2>
+    {% for contact in supplier.contacts.all %}
+      <p>{{ contact }} — {{ contact.email }}</p>
+    {% empty %}<p>Sin contactos.</p>{% endfor %}
+  </section>
+  <form method="post" action="{% url 'invite_supplier' supplier.id %}">
+    {% csrf_token %}
+    <button class="button" type="submit">Generar invitación</button>
+  </form>
+{% endblock %}
+

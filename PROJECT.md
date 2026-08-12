@@ -41,10 +41,13 @@ Estado: completado el 2026-08-12. Evidencia en
 
 ### H1 — Onboarding funcional
 
-- Organización, usuarios, roles, proveedores, contactos y categorías.
-- Invitación y portal del proveedor.
-- Creación y envío de un expediente.
-- Datos demostrativos y pruebas del recorrido principal.
+- [x] Organización, usuarios, roles, proveedores, contactos y categorías.
+- [x] Invitación y portal del proveedor.
+- [x] Creación y envío de un expediente.
+- [x] Datos demostrativos y pruebas del recorrido principal.
+
+Estado: completado el 2026-08-12. Evidencia en
+`docs/delivery/H1_REPORT.md`.
 
 ### H2 — Homologación funcional
 
